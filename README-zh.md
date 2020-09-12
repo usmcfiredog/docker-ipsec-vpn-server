@@ -1,6 +1,6 @@
 # Docker 上的 IPsec VPN 服务器
 
-[![Build Status](https://img.shields.io/travis/hwdsl2/docker-ipsec-vpn-server.svg?maxAge=1200)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/docker-ipsec-vpn-server.svg?maxAge=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/)
+[![Build Status](https://img.shields.io/github/workflow/status/hwdsl2/docker-ipsec-vpn-server/buildx%20latest.svg?cacheSeconds=3600)](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/docker-ipsec-vpn-server.svg?cacheSeconds=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/)
 
 使用这个 Docker 镜像快速搭建 IPsec VPN 服务器。支持 `IPsec/L2TP` 和 `Cisco IPsec` 协议。
 
@@ -37,7 +37,9 @@
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
-或者，你也可以自己从 GitHub [编译源代码](#从源代码构建)。Raspberry Pi 用户请看 [这里](#在-raspberry-pi-上使用)。
+支持以下架构系统：`linux/amd64`, `linux/arm64` 和 `linux/arm/v7`。
+
+或者，你也可以自己从 GitHub [编译源代码](#从源代码构建)。
 
 ## 如何使用本镜像
 
@@ -164,7 +166,7 @@ docker pull hwdsl2/ipsec-vpn-server
 Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 ```
 
-否则，将会下载最新版本。要更新你的 Docker 容器，首先在纸上记下你所有的 VPN 登录信息（参见上面的 "获取 VPN 登录信息"）。然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。最后按照 "如何使用本镜像" 的说明来重新创建它。
+否则，将会下载最新版本。要更新你的 Docker 容器，首先在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)。然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。最后按照 [这一小节](#如何使用本镜像) 的说明来重新创建它。
 
 ## 高级用法
 
@@ -177,23 +179,26 @@ VPN_DNS_SRV1=1.1.1.1
 VPN_DNS_SRV2=1.0.0.1
 ```
 
-### 在 Raspberry Pi 上使用
-
-如需在 Raspberry Pi （ARM 架构）上使用，你必须首先在你的设备上按照 [从源代码构建](#从源代码构建) 中的说明自己构建这个 Docker 镜像，而不是从 Docker Hub 下载。然后按照本文档的其它步骤操作。这一条也同样适用于其他的非 `x86_64` 架构的系统。
-
 ### 配置并使用 IKEv2 VPN
+
+*其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn).*
 
 使用这个 Docker 镜像，高级用户可以配置并使用 IKEv2。它是比 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 更佳的连接模式，该模式无需 IPsec PSK, 用户名或密码。更多信息请看[这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md)。在配置之后，你将可以选择三种模式中的任意一种连接。
 
 请按照以下步骤操作：
 
-1. [下载最新版本](#更新-docker-镜像)的 Docker 镜像。在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)，然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。
+1. [下载最新版本](#更新-docker-镜像)的 Docker 镜像。在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)，然后删除 Docker 容器。
 
    ```
+   # 下载最新版本的 Docker 镜像
    docker pull hwdsl2/ipsec-vpn-server
+
+   # 首先在纸上记下你所有的 VPN 登录信息
+   # 然后删除 Docker 容器
+   docker rm -f ipsec-vpn-server
    ```
 
-1. 创建一个新的 Docker 容器 （将 `./vpn.env` 替换为你自己的 `env` 文件）。
+1. 创建一个新的 Docker 容器（将 `./vpn.env` 替换为你自己的 [env 文件](#如何使用本镜像)）。
 
    ```
    docker run \
@@ -226,13 +231,13 @@ VPN_DNS_SRV2=1.0.0.1
    wget https://git.io/ikev2setup -O ikev2.sh && bash ikev2.sh
    ```
 
+   **注：** 如果要为更多的客户端生成证书，只需重新运行辅助脚本。要吊销一个客户端证书，参见[这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#吊销一个客户端证书)。
+
 1. 在完成之后，退出容器 `exit` 并转到 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。要将生成的 `.p12` 文件复制到 Docker 主机当前目录，你可以使用比如：
 
    ```
    docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient-日期-时间.p12 ./
    ```
-
-   如需为更多的客户端生成证书，请参见 [这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
 
 ### 从源代码构建
 
